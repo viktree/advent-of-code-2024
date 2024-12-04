@@ -53,7 +53,8 @@ def grid_points(nRows, nCols):
 
 def make_get_letter(lines):
     def get_letter(p):
-        return lines[p[0]][p[1]]
+        r, c = p
+        return lines[r][c]
 
     return get_letter
 

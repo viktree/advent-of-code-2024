@@ -58,17 +58,26 @@ def grid_points(nRows, nCols):
         yield row, col
 
 
+def make_get_letter(lines):
+    def get_letter(p):
+        r, c = p
+        return lines[r][c]
+
+    return get_letter
+
+
 @time_it
 def main():
     lines = read_lines("input.txt")
     nRows, nCols = len(lines), len(lines[0])
     list_neighbors = make_get_neighbors(nRows, nCols)
+    get_letter = make_get_letter(lines)
 
     count = 0
     for row, col in grid_points(nRows, nCols):
         if lines[row][col] == "X":
             for direction in list_neighbors(row, col):
-                if [lines[p[0]][p[1]] for p in direction] == ["M", "A", "S"]:
+                if [get_letter(p) for p in direction] == ["M", "A", "S"]:
                     count += 1
     print(count)
 
