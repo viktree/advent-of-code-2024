@@ -27,19 +27,10 @@ def read_lines(filename: str) -> list[str]:
 
 
 def check_line(line):
-    diffs = []
-    has_less_than_zero, has_greater_than_zero = False, False
-    for x, y in zip(line, line[1:]):
-        current_diff = y - x
-        has_less_than_zero |= current_diff < 0
-        has_greater_than_zero |= current_diff > 0
-        if has_less_than_zero and has_greater_than_zero:
-            return False
-        if -4 < current_diff < 4 and current_diff != 0:
-            diffs.append(current_diff)
-        else:
-            return False
-    return True
+    diffs = [y - x for x, y in zip(line, line[1:])]
+    all_negative = all([x in [-3, -2, -1] for x in diffs])
+    all_positive = all(x in [1, 2, 3] for x in diffs)
+    return all_negative or all_positive
 
 
 def partition(predicate, lst):
