@@ -21,7 +21,7 @@ def time_it(func):
 
 def read_lines(filename: str) -> list[str]:
     with open(filename) as my_file:
-        input_file = my_file.read().strip().split("\n")
+        input_file = my_file.read().strip().splitlines()
         return input_file
 
 

@@ -22,15 +22,15 @@ def time_it(func):
 
 def read_lines(filename: str) -> list[str]:
     with open(filename) as my_file:
-        input_file = my_file.read().strip().split("\n")
+        input_file = my_file.read().strip().splitlines()
         return input_file
 
 
 def check_line(line):
     diffs = []
     has_less_than_zero, has_greater_than_zero = False, False
-    for x, y in zip(line, line[1:]):
-        current_diff = y - x
+    diff_list = [x - y for x, y in zip(line, line[1:])]
+    for current_diff in diff_list:
         has_less_than_zero |= current_diff < 0
         has_greater_than_zero |= current_diff > 0
         if has_less_than_zero and has_greater_than_zero:

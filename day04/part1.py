@@ -23,27 +23,29 @@ def time_it(func):
 
 def read_lines(filename: str) -> list[str]:
     with open(filename) as my_file:
-        input_file = my_file.read().strip().split("\n")
+        input_file = my_file.read().strip().splitlines()
         return input_file
 
 
-def make_get_neighbors(nRows, nCols):
-    def list_neighbors(i, j):
+def make_get_neighbors(nRows: int, nCols: int):
+    all_points = set([p for p in grid_points(nRows, nCols)])
+
+    def list_neighbors(point):
+        r, c = point
         direction_list = [
-            [(i - 1, j - 1), (i - 2, j - 2), (i - 3, j - 3)],
-            [(i - 1, j), (i - 2, j), (i - 3, j)],
-            [(i - 1, j + 1), (i - 2, j + 2), (i - 3, j + 3)],
-            [(i, j - 1), (i, j - 2), (i, j - 3)],
-            [(i, j + 1), (i, j + 2), (i, j + 3)],
-            [(i + 1, j - 1), (i + 2, j - 2), (i + 3, j - 3)],
-            [(i + 1, j), (i + 2, j), (i + 3, j)],
-            [(i + 1, j + 1), (i + 2, j + 2), (i + 3, j + 3)],
+            [(r - 1, c - 1), (r - 2, c - 2), (r - 3, c - 3)],
+            [(r - 1, c), (r - 2, c), (r - 3, c)],
+            [(r - 1, c + 1), (r - 2, c + 2), (r - 3, c + 3)],
+            [(r, c - 1), (r, c - 2), (r, c - 3)],
+            [(r, c + 1), (r, c + 2), (r, c + 3)],
+            [(r + 1, c - 1), (r + 2, c - 2), (r + 3, c - 3)],
+            [(r + 1, c), (r + 2, c), (r + 3, c)],
+            [(r + 1, c + 1), (r + 2, c + 2), (r + 3, c + 3)],
         ]
         filtered = []
         for direction in direction_list:
             for p in direction:
-                row, col = p
-                if row < 0 or col < 0 or row >= nRows or col >= nCols:
+                if p not in all_points:
                     break
             else:
                 filtered.append(direction)
@@ -54,8 +56,7 @@ def make_get_neighbors(nRows, nCols):
 
 def grid_points(nRows, nCols):
     for point in itertools.product(range(nRows), range(nCols)):
-        row, col = point
-        yield row, col
+        yield point
 
 
 def make_get_letter(lines):
@@ -69,14 +70,15 @@ def make_get_letter(lines):
 @time_it
 def main():
     lines = read_lines("input.txt")
+
     nRows, nCols = len(lines), len(lines[0])
     list_neighbors = make_get_neighbors(nRows, nCols)
     get_letter = make_get_letter(lines)
 
     count = 0
-    for row, col in grid_points(nRows, nCols):
-        if lines[row][col] == "X":
-            for direction in list_neighbors(row, col):
+    for s in grid_points(nRows, nCols):
+        if get_letter(s) == "X":
+            for direction in list_neighbors(s):
                 if [get_letter(p) for p in direction] == ["M", "A", "S"]:
                     count += 1
     print(count)

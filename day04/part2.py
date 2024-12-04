@@ -24,21 +24,23 @@ def time_it(func):
 
 def read_lines(filename: str) -> list[str]:
     with open(filename) as my_file:
-        input_file = my_file.read().strip().split("\n")
+        input_file = my_file.read().strip().splitlines()
         return input_file
 
 
 def make_get_cross(nRows, nCols):
-    def get_cross(i, j):
+    all_points = set([p for p in grid_points(nRows, nCols)])
+
+    def get_cross(point):
+        r, c = point
         direction = [
-            (i - 1, j - 1),
-            (i - 1, j + 1),
-            (i + 1, j - 1),
-            (i + 1, j + 1),
+            (r - 1, c - 1),
+            (r - 1, c + 1),
+            (r + 1, c - 1),
+            (r + 1, c + 1),
         ]
         for p in direction:
-            row, col = p
-            if row < 0 or col < 0 or row >= nRows or col >= nCols:
+            if p not in all_points:
                 return []
         return direction
 
@@ -47,14 +49,12 @@ def make_get_cross(nRows, nCols):
 
 def grid_points(nRows, nCols):
     for point in itertools.product(range(nRows), range(nCols)):
-        row, col = point
-        yield row, col
+        yield point
 
 
 def make_get_letter(lines):
     def get_letter(p):
-        r, c = p
-        return lines[r][c]
+        return lines[p[0]][p[1]]
 
     return get_letter
 
@@ -67,13 +67,12 @@ def main():
     get_letter = make_get_letter(lines)
 
     count = 0
-    for row, col in grid_points(nRows, nCols):
-        if lines[row][col] == "A":
-            neighbors = get_cross(row, col)
-            letter_count = Counter([get_letter(p) for p in neighbors])
+    for p in grid_points(nRows, nCols):
+        if get_letter(p) == "A":
+            neighbors = get_cross(p)
+            letter_count = Counter([get_letter(q) for q in neighbors])
             if (
-                len(neighbors) == 4
-                and letter_count["S"] == 2
+                letter_count["S"] == 2
                 and letter_count["M"] == 2
                 and get_letter(neighbors[0]) != get_letter(neighbors[3])
                 and get_letter(neighbors[1]) != get_letter(neighbors[2])

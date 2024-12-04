@@ -26,7 +26,7 @@ def main():
     with open("input.txt") as f:
         file = f.read()
         matches = re.findall(r"mul\((\d+),(\d+)\)", file)
-        product = sum([int(x[0]) * int(x[1]) for x in matches])
+        product = sum([int(x) * int(y) for x, y in matches])
         print(product)
 
 
