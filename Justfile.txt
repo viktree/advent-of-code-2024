@@ -1,0 +1,8 @@
+
+aoc day part:
+	cd day{{day}} && python part{{part}}.py
+
+create day:
+	mkdir day{{day}}
+	touch day{{day}}/input.txt
+	cp template.py day{{day}}/part1.py
